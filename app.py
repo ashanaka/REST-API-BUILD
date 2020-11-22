@@ -1,5 +1,25 @@
 from flask import Flask, jsonify, request
+from flask_restful import Api, Resource
+
 app = Flask(__name__)
+api = Api(app)
+
+class Add(Resource):
+    def post(self):
+        postData = request.get_json()
+        x = postData["x"]
+        y = postData["y"]
+        x = int(x)
+        y = int(y)
+
+        ret = x + y
+        retMap = {
+                    'Message': ret,
+                    'Status Code': 200
+                }
+        return jsonify(retMap)
+
+api.add_resource(Add, "/add")
 
 @app.route('/')
 def hello_world():
@@ -12,17 +32,6 @@ def bye():
                 'field2': "field 2 data"
             }
     return jsonify(retJson)
-
-@app.route('/add', methods=["POST"])
-def add():
-    reqDict = request.get_json()
-    x = reqDict["x"]
-    y = reqDict["y"]
-    z = x+y
-    retJson = {
-                'z': z
-            }
-    return jsonify(retJson), 200
 
 if __name__ == "__main__":
     app.run(debug=true)
